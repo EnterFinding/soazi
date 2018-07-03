@@ -1,0 +1,151 @@
+{% extends 'bbs/index.html' %} {% load static %} {% load bbs_extras %}
+{% block style %}
+    <style>
+    #userinfo-left img{
+        height:120px;
+        width:120px;
+        margin-top:20px;
+        margin-bottom:15px;
+    }
+    #userinfo-left>div>span{
+        font-size:16px;
+        font-weight:600;
+        color:#333;
+        margin:7px auto;
+    }
+    #userinfo-right table{
+        font-size:16px;
+        margin:20px auto;
+    }
+    #auth-nav{
+        border-top:1px solid rgba(0,0,0,.08);
+        padding:0;
+        border-bottom:1px solid rgba(0,0,0,.08);
+    }
+    #auth-nav>ul{
+        margin:0;
+    }
+    #auth-nav>ul>li{
+        text-align:center;
+        position: relative;
+    }
+    #auth-nav>ul>li>a{
+        height:50px;
+        line-height: 50px;
+        width:140px;
+        color:#333;
+        font-weight:600;
+        font-family: 'Microsoft YaHei UI Light';
+        display:block;
+        text-decoration: none;
+    }
+    #auth-nav>ul>li>a:hover{
+        box-shadow:0 0 1px 1px rgba(0,0,0,.05);
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-default" style="border-radius:0;">
+                    <div class="panel-heading" style="background-color:transparent">
+                        个人信息
+                    </div>
+                    <div class="panel-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6" id="userinfo-left" style="box-shadow:1px 0 0 #ccc">
+                                    <img src="{% static 'custom/topic.jpg' %}" alt="..." class="img-circle center-block">
+                                    <div class="text-center">
+                                        <span class="center-block">{{ user.username }}</span>
+                                        <span class="center-block">{{ user.email }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="userinfo-right">
+                                    <table>
+                                        <tr>
+                                            <td width="35%">创建于:</td>
+                                            <td>{{ user.created }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>最后修改:</td>
+                                            <td>{{ user.updated }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" id="auth-nav">
+                        <ul class="list-inline">
+                            <li class="active">
+                                <a href="#bbs">论坛文章</a>
+                            </li>
+                            <li>
+                                <a href="#blog">博客文章</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-body tab-content">
+                        <div id="bbs" class="tab-pane fade active in">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">标题</th>
+                                        <th>浏览量</th>
+                                        <th>点赞数</th>
+                                        <th>发布时间</th>
+                                        <th>回复数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in bbs_articles %}
+                                    <tr>
+                                        <td>{{ i.topic }}</td>
+                                        <td>{{ i.visits }}</td>
+                                        <td>{{ i.likes }}</td>
+                                        <td>{{ i.created }}</td>
+                                        <td>{{ i.id|reply_num }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="blog" class="tab-pane fade">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">标题</th>
+                                        <th>浏览量</th>
+                                        <th>点赞数</th>
+                                        <th>发布时间</th>
+                                        <th>回复数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in blog_articles %}
+                                    <tr>
+                                        <td>{{ i.topic }}</td>
+                                        <td>{{ i.visits }}</td>
+                                        <td>{{ i.likes }}</td>
+                                        <td>{{ i.created }}</td>
+                                        <td>{{ i.id }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script>
+    $('#auth-nav>ul>li>a').click(function(){
+        $(this).tab('show');
+    })
+    </script>
+{% endblock script %}

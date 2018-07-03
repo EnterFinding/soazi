@@ -1,0 +1,41 @@
+{% extends 'generic/base.html' %} {% load static %}
+{% block content %}
+    <div class="container-fluid" style="margin-top:3%;">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="hot-leader panel panel-danger">
+                                <div class="panel-heading">热门榜</div>
+                                <div class="panel-body">
+                                    <ul class="list-unstyled">
+                                        {% for row in hot_leader %}
+                                        <li>
+                                            {{ forloop.counter }}. <a href="{% url 'bbs:detail' row.id %}">{{ row.topic }}</a><span style="float:right">{{ row.visits }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="hot-leader panel panel-primary">
+                                <div class="panel-heading">收藏榜</div>
+                                <div class="panel-body">
+                                    <ul class="list-unstyled">
+                                        {% for row in like_leader %}
+                                        <li>
+                                            {{ forloop.counter }}. <a href="{% url 'bbs:detail' row.id %}">{{ row.topic }}</a><span style="float:right">{{ row.likes }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,143 @@
+{% extends 'generic/base.html' %} {% load staticfiles %} {% load bbs_extras %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'bootstrap/extra/toastr.min.css' %}">
+{% endblock style %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default bbs-detail-main">
+                    <div class="panel-heading">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>{{ article.topic }}</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <ul class="list-unstyled list-inline col-md-12" style="margin-bottom:0;">
+                                    <li>
+                                        <a href="#">{{ article.author }}</a>
+                                    </li>
+                                    <li>
+                                        <i class="icon">&#xe65f;</i> {{ article.created }}
+                                    </li>
+                                    <li>
+                                        <i class="icon">&#xe7f4;</i> {{ article.visits }}人浏览
+                                    </li>
+                                    <li>
+                                        {{ article.likes }}
+                                    </li>
+                                    <li style="float:right;user-select:none;">
+                                        <span style="border:1px solid #ccc;padding:3px 7px;color:#bbb;">{{ article.code }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="padding-bottom:0;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ article.content }}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:30px;">
+                                <div class="col-md-12">
+                                    <ul class="list-unstyled list-inline" style="margin-bottom:0;">
+                                        <li>
+                                            <button id="good" class="btn btn-link"><i class="icon">&#xe7e1;</i> 点赞</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h3>回复</h3>
+                                </div>
+                            </div>
+                            <div class="row" id="reply">
+                                <form class="col-md-12">
+                                    <div class="form-group sr-only">
+                                        {{ replyform.content }}
+                                    </div>
+                                    <div class="form-group" id="reply-content"></div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-default btn-block">提交</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer" style="border-top:none;padding-bottom:25px;padding-top:0;">
+                        <div class="container-fluid">
+                            <div class="row" style="border-bottom:1px solid #ddd;">
+                                <div class="col-md-4">
+                                    <h3>评论区</h3>
+                                </div>
+                            </div>
+                            {% for row in reply %}
+                            <div class="row reply">
+                                <div class="col-md-2">
+                                    <div class="reply-author-img">
+                                        <img src="{% static 'custom/topic.jpg' %}" class="img-circle" width="100%" height="100%" alt="">
+                                    </div>
+                                    <div class="reply- text-center">
+                                        <span class="center-block">{{ row.author }}</span>
+                                        <a href="#" class="center-block text-muted" style="margin-top:5px;text-decoration: none;"><i class="icon" style="font-size:16px;">&#xe7e1;</i></a>
+                                    </div>
+                                </div>
+                                <div class="col-md-8" style="height:100%;">
+                                    <div style="height:80%">
+                                        {{ row.content }}
+                                    </div>
+                                    <ul class="list-unstyled list-inline" style="margin:0;">
+                                        <li>
+                                            <i class="icon">&#xe65f;</i> {{ row.created }}
+                                        </li>
+                                        <li>
+                                            <a href="#"><i class="icon">&#xe7e0;</i> 回复</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script src="{% static 'bootstrap/extra/toastr.min.js' %}"></script>
+    <script>
+        var E = window.wangEditor;
+        var editor = new E('#reply-content');
+        editor.customConfig.onchange = function(html){
+            $('#id_content').val(html);
+        };
+        editor.create();
+        $('#id_content').val(editor.txt.html());
+        toastr.options = {
+            'positionClass': 'toast-top-center',
+            'timeOut': 300
+        }
+        $('#good').click(function(){
+            $.ajax({
+                url: "{% url 'bbs:detail_good' article.id %}",
+                type: 'post',
+                data:{
+                    csrfmiddlewaretoken:'{{ csrf_token }}'
+                },
+                success: function(value){
+                    if (typeof(value.over)=='Number'){
+                        toastr.info('<赞>+1, 共'+value.over);
+                    }else{
+                        toastr.error(value.over);
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock script %}
